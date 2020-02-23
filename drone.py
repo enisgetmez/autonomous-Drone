@@ -61,6 +61,7 @@ def initial():
 
 	print ("Robot Arm Edildi" )
 	vehicle.mode = VehicleMode("GUIDED")
+	vehicle.armed = True
 	
 	while not (vehicle.armed):
 		print ("Arm olması Bekleniyor.")
