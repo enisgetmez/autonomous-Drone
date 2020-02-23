@@ -205,63 +205,8 @@ def takeoff():
 	if (vehicle.location.global_relative_frame.alt>=altitude*0.95):
 		print("Hedeflenen yüksekliğe ulaşıldı...")
 
-
-
-vehicle = connect('/dev/ttyAMA0', wait_ready=True, baud=57600)
-#vehicle = connect('/dev/ttyUSB0', wait_ready=True, baud=57600)
-
-initial()
-takeoff()
-
-gorev = 1
-init = 1
-while True: 
- 
-
-
-     if keyboard.is_pressed('d'):
-          up = colors["green"]["upper"]
-          low = colors["green"]["lower"]
-          low1 = low.split(",")
-          up1 = up.split(",")
-
-          colorLower = int(low1[0]),int(low1[1]),int(low1[2])
-          colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
-
-     (grabbed, frame) = camera.read()
-
-
-     frame = imutils.resize(frame, width=320, height=240) 
-     frame = imutils.rotate(frame, angle=0) 
-
-     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
-     mask = cv2.inRange(hsv, colorLower, colorUpper)
-     mask = cv2.erode(mask, None, iterations=2) 
-     mask = cv2.dilate(mask, None, iterations=2) 
-
-
-     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
-	 cv2.CHAIN_APPROX_SIMPLE)[-2]
-     center = None
-
-
-     if len(cnts) > 0:
-
-		     c = max(cnts, key=cv2.contourArea)
-		     ((x, y), radius) = cv2.minEnclosingCircle(c)
-		     M = cv2.moments(c)
-		     center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
-
-		     if radius > 10: #algılanacak hedefin minumum boyutu
-			     cv2.circle(frame, (int(x), int(y)), int(radius),
-				 (0, 255, 255), 2)
-			     cv2.circle(frame, center, 5, (0, 0, 255), -1)
-     else:
-          x = 0
-          y = 0
-          r = 0
-	 if(gorev == 1):
+def autopilot():
+	if(gorev == 1):
 		if(x> 110 & x < 210):
 			if(y> 80 & y < 150):
 				land()
@@ -283,77 +228,122 @@ while True:
 				back()
 			if(y> 80 & x < 110):
 				left()
-	 elif(gorev == 2):
+	elif(gorev == 2):
 		 if (init ==2):
-			up = colors["red"]["upper"]
-			low = colors["red"]["lower"]
-			low1 = low.split(",")
-			up1 = up.split(",")
-			colorLower = int(low1[0]),int(low1[1]),int(low1[2])
-			colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
-		 	initial()
-		 	takeoff()
-		 	time.sleep(2)
-			init =3
-		if(x> 110 & x < 210):
-			if(y> 80 & y < 150):
-				land()
-				time.sleep(2)
-				gorev = 3
-				init = 4 
-		elif(x>210):
-			if(y < 80):
-				forward()
-			elif(y > 150):
-				back()
-			if(y> 80 & x < 110):
-				right()
+			 up = colors["red"]["upper"]
+			 low = colors["red"]["lower"]
+			 up1 = up.split(",")
+			 colorLower = int(low1[0]),int(low1[1]),int(low1[2])
+			 colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
+			 initial()
+			 takeoff()
+			 time.sleep(2)
+			 init =3
+		 if(x> 110 & x < 210):
+				if(y> 80 & y < 150):
+					land()
+					time.sleep(2)
+					gorev = 3
+					init = 4 
+		 elif(x>210):
+				if(y < 80):
+					forward()
+				elif(y > 150):
+					back()
+				if(y> 80 & x < 110):
+					right()
 
-		elif(x > 1 & x < 110 ): 
-			if(y < 80):
-				forward()
-			elif(y > 150):
-				back()
-			if(y> 80 & x < 110):
-				left()
-	 elif(gorev == 3):
+		 elif(x > 1 & x < 110 ): 
+				if(y < 80):
+					forward()
+				elif(y > 150):
+					back()
+				if(y> 80 & x < 110):
+					left()
+	elif(gorev == 3):
 		 if(init == 3):
-			up = colors["green"]["upper"]
-			low = colors["green"]["lower"]
-			low1 = low.split(",")
-			up1 = up.split(",")
-			colorLower = int(low1[0]),int(low1[1]),int(low1[2])
-			colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
-			takeoff()
-			time.sleep(2)
-			init =4
-		if(x> 110 & x < 210):
-			if(y> 80 & y < 150):
-				land()
+				up = colors["green"]["upper"]
+				low = colors["green"]["lower"]
+				low1 = low.split(",")
+				up1 = up.split(",")
+				colorLower = int(low1[0]),int(low1[1]),int(low1[2])
+				colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
+				takeoff()
 				time.sleep(2)
-				gorev = 4
-				init = 24
-		elif(x>210):
-			if(y < 80):
-				forward()
-			elif(y > 150):
-				back()
-			if(y> 80 & x < 110):
-				right()
+				init =4
+		 if(x> 110 & x < 210):
+				if(y> 80 & y < 150):
+					land()
+					time.sleep(2)
+					gorev = 4
+					init = 24
+		 elif(x>210):
+				if(y < 80):
+					forward()
+				elif(y > 150):
+					back()
+				if(y> 80 & x < 110):
+					right()
 
-		elif(x > 1 & x < 110 ): 
-			if(y < 80):
-				forward()
-			elif(y > 150):
-				back()
-			if(y> 80 & x < 110):
-				left()
+		 elif(x > 1 & x < 110 ): 
+				if(y < 80):
+					forward()
+				elif(y > 150):
+					back()
+				if(y> 80 & x < 110):
+					left()
+
+vehicle = connect('/dev/ttyAMA0', wait_ready=True, baud=57600)
+#vehicle = connect('/dev/ttyUSB0', wait_ready=True, baud=57600)
+
+initial()
+takeoff()
+
+gorev = 1
+init = 1
+while True: 
+ 
 
 
+    if keyboard.is_pressed('d'):
+          up = colors["green"]["upper"]
+          low = colors["green"]["lower"]
+          low1 = low.split(",")
+          up1 = up.split(",")
 
-     print("x : ")
-     print(x) # kameradan gelen görüntüde bizim rengimiz varsa x kordinatı
-     print("y : ")
-     print(y) # kameradan gelen görüntüde bizim rengimiz varsa y kordinatı
-     cv2.imshow("test", frame)
-     cv2.waitKey(1)
+          colorLower = int(low1[0]),int(low1[1]),int(low1[2])
+          colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
+
+    (grabbed, frame) = camera.read()
+
+
+    frame = imutils.resize(frame, width=320, height=240) 
+    frame = imutils.rotate(frame, angle=0) 
+
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
+    mask = cv2.inRange(hsv, colorLower, colorUpper)
+    mask = cv2.erode(mask, None, iterations=2) 
+    mask = cv2.dilate(mask, None, iterations=2) 
+
+
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+	cv2.CHAIN_APPROX_SIMPLE)[-2]
+    center = None
+
+
+    if len(cnts) > 0:
+
+		     c = max(cnts, key=cv2.contourArea)
+		     ((x, y), radius) = cv2.minEnclosingCircle(c)
+		     M = cv2.moments(c)
+		     center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+
+
+		     if radius > 10: #algılanacak hedefin minumum boyutu
+			     cv2.circle(frame, (int(x), int(y)), int(radius),
+				 (0, 255, 255), 2)
+			     cv2.circle(frame, center, 5, (0, 0, 255), -1)
+    else:
+          x = 0
+          y = 0
+          r = 0
