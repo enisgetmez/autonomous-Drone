@@ -61,7 +61,6 @@ def initial():
 
 	print ("Robot Arm Edildi" )
 	vehicle.mode = VehicleMode("GUIDED")
-	vehicle.armed = True
 	
 	while not (vehicle.armed):
 		print ("Arm olması Bekleniyor.")
@@ -210,6 +209,7 @@ def autopilot():
 		if(x> 110 & x < 210):
 			if(y> 80 & y < 150):
 				land()
+				vehicle.armed= False
 				time.sleep(2)
 				gorev = 2
 				init = 2 
@@ -236,15 +236,18 @@ def autopilot():
 			 colorLower = int(low1[0]),int(low1[1]),int(low1[2])
 			 colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
 			 initial()
+			 vehicle.armed= True
 			 takeoff()
 			 time.sleep(2)
 			 init =3
 		 if(x> 110 & x < 210):
 				if(y> 80 & y < 150):
 					land()
+					vehicle.armed= False
 					time.sleep(2)
 					gorev = 3
 					init = 4 
+
 		 elif(x>210):
 				if(y < 80):
 					forward()
@@ -268,6 +271,7 @@ def autopilot():
 				up1 = up.split(",")
 				colorLower = int(low1[0]),int(low1[1]),int(low1[2])
 				colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
+				vehicle.armed= True
 				takeoff()
 				time.sleep(2)
 				init =4
@@ -277,6 +281,7 @@ def autopilot():
 					time.sleep(2)
 					gorev = 4
 					init = 24
+					vehicle.armed= False
 		 elif(x>210):
 				if(y < 80):
 					forward()
@@ -303,16 +308,6 @@ gorev = 1
 init = 1
 while True: 
  
-
-
-    if keyboard.is_pressed('d'):
-          up = colors["green"]["upper"]
-          low = colors["green"]["lower"]
-          low1 = low.split(",")
-          up1 = up.split(",")
-
-          colorLower = int(low1[0]),int(low1[1]),int(low1[2])
-          colorUpper = int(up1[0]),int(up1[1]),int(up1[2])
 
     (grabbed, frame) = camera.read()
 
