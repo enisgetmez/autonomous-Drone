@@ -293,7 +293,7 @@ def autopilot():
 				if(y> 80 & x < 110):
 					left()
 
-vehicle = connect('/dev/ttyAMA0', wait_ready=True, baud=57600)
+vehicle = connect('/dev/ttyACM0', wait_ready=True, baud=57600)
 #vehicle = connect('/dev/ttyUSB0', wait_ready=True, baud=57600)
 
 initial()
